@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Hello Web - Processing.js Test</title>
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/datepickk.css">
+    <link rel="stylesheet" href="css/doc.css">
+    <script type ="text/javascript" src="js/p5.js"> </script>
+    <script type ="text/javascript" src="js/loading.js"> </script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:400,600" rel="stylesheet">
+  
+    <script type ="text/javascript" src="js/datepickk.js"> </script>
+    <script type ="text/javascript" src="js/Preprocess.js"> </script>
+    <script type ="text/javascript" src="js/jquery-3.3.1.js"> </script>
+
+    <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase-database.js"></script> 
+    <script>
+        var config = {
+                          apiKey: "AIzaSyDPMG1HVrxALKCEeLShAjKBscTrLAZyBbE",
+                          authDomain: "energis-698b3.firebaseapp.com",
+                          databaseURL: "https://energis-698b3.firebaseio.com",
+                          projectId: "energis-698b3",
+                          storageBucket: "energis-698b3.appspot.com",
+                          messagingSenderId: "1094595025379"
+                      }
+        firebase.initializeApp(config)
+    </script>
+
+
+
+</head>
+  <body>
+    <label>Welcome <output id='name' type='text' value=""> </label>
+
+    <script type ="text/javascript"> 
+        let     name        = JSON.parse(localStorage.getItem('user'))
+        let     x           = document.getElementById("name")
+        x.value = name
+    </script>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div id="demoPicker" style="height:300px; 
+                            width:100%; 
+                            max-width: 350px;
+                            margin-left: auto; 
+                            margin-right: auto;"> 
+                            </div>
+
+    <script type ="text/javascript"> 
+      var now = new Date();
+      var demoPicker = new Datepickk({
+            container: document.querySelector('#demoPicker'),
+            inline:true,
+            startDate: new Date(2017,9,1)
+          })
+
+      let nf = new Intl.NumberFormat(["en-US"], {    
+          minimumIntegerDigits : 2  
+      })
+      var dateformate
+      demoPicker.onSelect = function (checked){
+              let a = this.toLocaleDateString().split('/')
+              let d = []
+              d[0] = a[2] - 543
+              d[1] = nf.format(a[1])
+              d[2] = nf.format(a[0])
+              dateformate = d.join("-")
+      }
+    </script>
+
+    <br>
+    <br>
+
+    <div class="dropdown">
+      <select id="type" onchange="gettype()">
+        <option>-Select Type-</option >
+        <option value="Electricity">Electricity</option >
+        <option value="water">Water</option >
+        <option value="Internet Access">Internet Access</option >
+      </select>
+    </div>
+
+    <script type="text/javascript">
+      var type
+      gettype = () => {
+          type = document.getElementById("type").value
+      }
+
+    </script>
+
+    <br>
+    <br>
+
+    <div class="dropdown">
+      <select id="location" onchange="getloc()">
+        <option>-Select Location-</option >
+        <option value="1062304">4 F 23 B Engineering</option>
+        <option value="1062300">23 B Engineering</option>
+        
+      </select>
+    </div>
+
+    <script type="text/javascript">
+      var locations 
+      getloc = () => {
+          locations = document.getElementById("location").value
+      }
+    </script>
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <button id='Submit' style=' display: block;
+                                margin-left: auto; 
+                                margin-right: auto;'
+                                type="button" onclick="loading()"> Submit </button>
+    <button id='Next'  style='display: none;
+                              margin-left: auto; 
+                              margin-right: auto;' 
+                              type="button" onclick="run()"> Next </button>
+    <button id='Next'  style='margin-left: auto; 
+                              margin-right: auto;' 
+                              type="button" onclick="goupload()"> upload </button>
+
+    <script type="text/javascript">
+      var search
+      loading = () => {
+          if((locations != null) && (type != null) && (dateformate != null)){
+              H5_loading.show(10000)
+              let     user  = JSON.parse(localStorage.getItem('user'))
+              search = new Preprocess(dateformate, type, locations, user)
+              search.check()
+              H5_loading.hide(10)
+              let x = document.getElementById("Submit")
+              x.style.display = "none"
+              let y = document.getElementById("Next")
+              y.style.display = "block"
+          }
+          else{
+            if ((locations == null) && (type == null) && (dateformate == null)){
+              alert('Please select location, type and date!!!')
+            }
+            else if ((locations == null) && (type == null)){
+                alert('Please select location and type!!!')
+            }
+            else if ((type == null) && (dateformate == null)){
+                alert('Please select type and date!!!')
+            }
+            else if ((locations == null)&& (dateformate == null)){
+               alert('Please select date and location!!!')
+            }
+            else{
+                alert('Something Error!!!!')
+            }
+          }
+      }
+
+      run = () => {
+        let getdata = search.getvalue()
+        localStorage.setItem('data', JSON.stringify(getdata))
+        localStorage.setItem('date', JSON.stringify(dateformate))
+        localStorage.setItem('type', JSON.stringify(type))
+        window.location = 'visualisation.html'
+        
+      }
+
+      goupload = () =>{
+        window.location = 'upload.html'
+      }
+    </script>
+
+    
+  </body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>EnergiS - 3D Visualisation Model</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/datepickk.css">
+    <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase-database.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase-firestore.js"></script>
+    <script>
+        var config = {
+                          apiKey: "AIzaSyDPMG1HVrxALKCEeLShAjKBscTrLAZyBbE",
+                          authDomain: "energis-698b3.firebaseapp.com",
+                          databaseURL: "https://energis-698b3.firebaseio.com",
+                          projectId: "energis-698b3",
+                          storageBucket: "energis-698b3.appspot.com",
+                          messagingSenderId: "1094595025379"
+                      }
+
+        firebase.initializeApp(config)
+    </script>
+    <script type ="text/javascript" src="js/p5.js"> </script>
+    <script type ="text/javascript" src="js/p5.easycam.js"> </script>
+    <script type ="text/javascript" src="js/Chart.js"> </script>
+    <script type ="text/javascript" src="js/heatmap.js"> </script>
+    <script type ="text/javascript" src="js/jquery-3.3.1.js"> </script>
+    <script type ="text/javascript" src="js/Preprocess.js"> </script>
+    <script type ="text/javascript" src="js/Create.js"> </script>
+   	<script type ="text/javascript" src="js/AC.js"> </script>
+   	<script type ="text/javascript" src="js/Visualisation.js"> </script>
+
+
+</head>
+<body style="background: #fff ">
+
+<button onclick="visual()">Model</button>
+<button onclick="chart()">Chart</button>
+
+<script type="text/javascript">
+  visual = () =>{
+    window.location = 'visualisation.html'
+  }
+  chart = () =>{
+    window.location = 'Chart.html'
+  }
+</script>
+
+    <h1>Summary Usage</h1>
+    <canvas id="myChart1" style='margin-left: auto; 
+                                 margin-right: auto;' width="1000" height="400"></canvas>
+                                 <br>
+                                 <br>
+                                 <br>
+    <h1>Summary Usage By time</h1>
+    <canvas id="myChart2" style='margin-left: auto; 
+                                 margin-right: auto;' width="1000" height="400"></canvas>
+                                 <br>
+                                 <br>
+                                 <br>
+    <h1>Summary Usage By time</h1>
+    <canvas id="myChart3" style='margin-left: auto; 
+                                 margin-right: auto;' width="1000" height="400"></canvas>
+
+    <script type ="text/javascript" src="js/chart_Project.js"> </script>
+
+    
+</body>
+</html>

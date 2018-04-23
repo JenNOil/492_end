@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+
+    <h1> Firebase Login</h1>
+    <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
+
+  </head>
+<body>
+	<button type = "button" name = "button" onclick="googlesignin()"> Sign in </button>
+	<button type = "button" name = "button" onclick="googlesignout()"> Sign out </button>
+  <button type = "button" name = "button" onclick="anonymoussignin()"> Guest </button>
+	
+	<script>
+
+  // Initialize Firebase
+  	var config = {
+    apiKey: "AIzaSyDPMG1HVrxALKCEeLShAjKBscTrLAZyBbE",
+    authDomain: "energis-698b3.firebaseapp.com",
+    databaseURL: "https://energis-698b3.firebaseio.com",
+    projectId: "energis-698b3",
+    storageBucket: "energis-698b3.appspot.com",
+    messagingSenderId: "1094595025379"
+  }
+  	firebase.initializeApp(config);
+
+  	let provider = new firebase.auth.GoogleAuthProvider()
+  	googlesignin = () =>  {
+
+  	firebase.auth().signInWithPopup(provider).then( (result) => {
+  		let user = result.user.displayName
+      let email = result.user.email
+  		localStorage.setItem('user', JSON.stringify(user))
+      //localStorage.setItem('email', JSON.stringify(email))
+      window.location = 'select.html'
+
+  	   }).catch( (error) => {
+
+  		  let errorCode = error.code
+  		  let errorMessage = error.message
+  		  alert(errorCode + error.message)
+  	   })
+    }
+
+	googlesignout = () => {
+
+		firebase.auth().signOut()
+
+		.then( () => {
+
+			alert('SignOut Successful')
+      localStorage.clear()
+		}, (error) =>{
+
+			alert('SignOut Failed')
+		})
+
+	}
+
+  anonymoussignin = () =>{
+      firebase.auth().signInAnonymously().catch( (error) => {
+          let errorCode = error.code
+          let errorMessage = error.message
+          alert(errorCode + error.message)
+      })
+      firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+          let isAnonymous = user.isAnonymous
+          if(isAnonymous){
+              let user = 'Anonymous'
+              localStorage.setItem('user', JSON.stringify(user))
+              window.location = 'select.html'
+          }
+          
+        }
+        
+      })
+  }
+		</script>
+  
+	
+
+
+
+	</body>
+
+</html>

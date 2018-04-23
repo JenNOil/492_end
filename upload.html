@@ -1,0 +1,153 @@
+<!doctype html>
+
+<html>
+    <head>
+
+        <meta charset="utf-8" />
+        <title>EnergiS - Upload File</title>
+       
+        <link rel="stylesheet" href="css/style.css">
+        <script type ="text/javascript" src="js/loading.js"> </script>
+        <script type ="text/javascript" src="js/jquery-3.3.1.js"> </script>
+        <script type ="text/javascript" src="js/Preprocess.js"> </script>
+        <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase-database.js"></script> 
+        <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase-firestore.js"></script>
+        <script>
+            var config = {
+                          apiKey: "AIzaSyDPMG1HVrxALKCEeLShAjKBscTrLAZyBbE",
+                          authDomain: "energis-698b3.firebaseapp.com",
+                          databaseURL: "https://energis-698b3.firebaseio.com",
+                          projectId: "energis-698b3",
+                          storageBucket: "energis-698b3.appspot.com",
+                          messagingSenderId: "1094595025379"
+                      }
+
+            firebase.initializeApp(config)
+        </script>
+
+    </head>
+
+    <body>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <div id="inputs" class="clearfix">
+            <input type="file" id="files" name="files[]" multiple />
+        </div>
+        <br>
+        <br>
+        <div>
+            <h2>Location : 
+                <input id='location' type="text" value=""><br><br>
+            </h2>
+            <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Type     : 
+                <input id='type' type="text" value=""><br><br>
+            </h2>
+            <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date     : 
+                <input id='date' type="text" value="">
+            </h2>
+        </div>
+
+        <script type ="text/javascript" src="js/jquery.csv.js"> </script>
+
+        <br>
+
+        <div >
+            
+            <br><br>
+            <button onclick="loading()">Submit </button>
+            <ul>
+                <li><a href="select.html" class="round green">Back<span class="round"></span></a></li>
+            </ul>             
+        </div>
+
+        <script>
+            let locations
+            let type
+            let date
+            let data
+
+            $(document).ready( () => {
+                if(isAPIAvailable()) {
+                    $('#files').bind('change', handleFileSelect)
+                }
+            })
+
+            isAPIAvailable = () => {
+                // Check for the various File API support.
+                if (window.File && window.FileReader && window.FileList && window.Blob) {
+                    // Great success! All the File APIs are supported.
+                    return true
+                } else {
+                    // source: File API availability - http://caniuse.com/#feat=fileapi
+                    // source: <output> availability - http://html5doctor.com/the-output-element/
+                    document.writeln('The HTML5 APIs used in this form are only available in the following browsers:<br />')
+                    // 6.0 File API & 13.0 <output>
+                    document.writeln(' - Google Chrome: 13.0 or later<br />')
+                    // 3.6 File API & 6.0 <output>
+                    document.writeln(' - Mozilla Firefox: 6.0 or later<br />')
+                    // 10.0 File API & 10.0 <output>
+                    document.writeln(' - Internet Explorer: Not supported (partial support expected in 10.0)<br />')
+                    // ? File API & 5.1 <output>
+                    document.writeln(' - Safari: Not supported<br />')
+                    // ? File API & 9.2 <output>
+                    document.writeln(' - Opera: Not supported')
+                    return false
+                }
+            }
+
+            handleFileSelect = (evt) => {
+                let files = evt.target.files // FileList object
+                let file = files[0]
+
+                //read the file contents
+                pushdata(file)
+
+            }
+
+            pushdata = (file) => {
+                let reader = new FileReader()
+                reader.readAsText(file)
+                reader.onload = function(event){
+                    let csv = event.target.result
+                        data = $.csv.toArrays(csv)
+                    let x = document.getElementById("location")
+                    let y = document.getElementById("type")
+                    let z = document.getElementById("date")
+                    let checklo = new Preprocess()
+                    x.value = checklo.checklocation(data[1][0])
+                    y.value = data[1][1]
+                    z.value = data[1][2]
+                    
+                    //set ref in firebase 
+                    locations = data[1][0]
+                    type = data[1][1]
+                    date = data[1][2]
+                }
+                reader.onerror = function(){ alert('Unable to read ' + file.fileName) }
+            }
+
+
+            loading = () =>{
+                if((locations != null) && (type != null) && (date != null)){
+                    H5_loading.show()
+                    let user       = JSON.parse(localStorage.getItem('user'))
+                    let pushdata    = new Preprocess(date, type, locations, user)
+                    let setdata     = pushdata.csvsetdata(data)
+                    H5_loading.hide(10)
+                }
+                else{
+                      alert('Something Error!!!!\n Please select new file')
+                }
+
+            
+            }
+        </script>
+    
+    </body>
+</html>
